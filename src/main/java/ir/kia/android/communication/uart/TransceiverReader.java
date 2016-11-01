@@ -1,5 +1,8 @@
 package ir.kia.android.communication.uart;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.function.Consumer;
 
 /**
@@ -7,6 +10,7 @@ import java.util.function.Consumer;
  * @since 2016-10
  */
 class TransceiverReader extends TransceiverCommon {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final Consumer<Integer> dataConsumer;
 
     TransceiverReader(Transceiver transceiver, SerialConfig serialConfig, Consumer<Integer> dataConsumer) {
@@ -30,11 +34,40 @@ class TransceiverReader extends TransceiverCommon {
                 }
                 int finalResult = result;
                 // calling data consumer on another thread to free Reader
-                new Thread(() -> dataConsumer.accept(finalResult)).start();
+                new Thread(() -> parseAndSendResult(finalResult)).start();
             } else {
                 // check twice in a pulse duration to be sure not missing start bit
                 sleep(pulseDuration / 2);
             }
         }
+    }
+
+    private void parseAndSendResult(int finalResult) {
+        if (serialConfig.isInverted()) {
+            finalResult = ~finalResult;
+        }
+        for (int i = 0; i < serialConfig.getStopBits(); i++) {
+            if (((1 << i) & finalResult) == 0) {
+                logger.warn("wrong data received: " + finalResult);
+                return;
+            }
+        }
+        finalResult = finalResult >> serialConfig.getStopBits();
+        if (serialConfig.hasParityBit()) {
+            int sum = 0;
+            for (int i = 0; i <= serialConfig.getBits(); i++) {
+                int mask = 1 << i;
+                if ((mask & finalResult) > 0) {
+                    sum++;
+                }
+            }
+            if ((sum & 1) > 1) {
+                logger.warn("wrong data received: " + finalResult);
+                return;
+            }
+            finalResult = finalResult >> 1;
+        }
+        finalResult = finalResult & (~(~0 << serialConfig.getBits()));
+        dataConsumer.accept(finalResult);
     }
 }

@@ -19,7 +19,7 @@ public class TransceiverReaderTest {
         SerialConfig config = new SerialConfig(baudRate, "8N1", false);
         TransceiverReader reader = new TransceiverReader(new DummyTransReceiver(baudRate), config, new Consumer<Integer>() {
             private boolean firstResult = true;
-            private int[] results = new int[]{3, 31, 95, 103, 511};
+            private int[] results = new int[]{1, 15, 47, 51, 255};
 
             @Override
             public void accept(Integer data) {
@@ -39,7 +39,7 @@ public class TransceiverReaderTest {
         });
         new Thread(reader).start();
 
-        Thread.sleep(20000);
+        Thread.sleep(10000);
         System.out.println("stop readeing");
         reader.stop();
         Thread.sleep(1000);
