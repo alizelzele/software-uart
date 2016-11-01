@@ -38,6 +38,8 @@ public class TransceiverWriter extends TransceiverCommon {
 
     @Override
     public void run() {
+        // putting line to initial state
+        transceiver.transmit(serialConfig.isInverted() ? 0 : 1);
         int read;
         while (alive) {
             try {
@@ -48,7 +50,7 @@ public class TransceiverWriter extends TransceiverCommon {
             if (read != -1) {
                 int toSend = generateValueToSend(read);
                 startTime = System.nanoTime();
-                for (int currentBit = dataCount - 1; currentBit > 0; currentBit++) {
+                for (int currentBit = dataCount - 1; currentBit >= 0; currentBit--) {
                     int state = ((toSend & (1 << currentBit)) > 0) ? 1 : 0;
                     transceiver.transmit(state);
                     waitOnePulse();
