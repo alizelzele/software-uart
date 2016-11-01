@@ -16,9 +16,10 @@ public class SerialConfig {
     public SerialConfig(int baudRate, String config, boolean inverted) {
         this.baudRate = baudRate;
         this.bits = Character.getNumericValue(config.charAt(0));
-        this.parityBit = Character.toLowerCase(config.charAt(1)) == 'n';
+        this.parityBit = Character.toLowerCase(config.charAt(1)) != 'n';
         this.stopBits = Character.getNumericValue(config.charAt(2));
         this.inverted = inverted;
+        checkValues();
     }
 
     public SerialConfig(int baudRate, int bits, boolean parityBit, int stopBits, boolean inverted) {
@@ -27,6 +28,16 @@ public class SerialConfig {
         this.parityBit = parityBit;
         this.stopBits = stopBits;
         this.inverted = inverted;
+        checkValues();
+    }
+
+    private void checkValues() {
+        if (bits > 8 || bits < 5) {
+            throw new SerialConfigException("bits", bits, "5-8");
+        }
+        if (stopBits > 2 || stopBits < 1) {
+            throw new SerialConfigException("stopBits", stopBits, "1,2");
+        }
     }
 
     public int getBaudRate() {
