@@ -17,12 +17,12 @@ public class TransceiverReaderTest {
     @Test
     public void testRead() throws InterruptedException {
         SerialConfig config = new SerialConfig(baudRate, "8N1", false);
-        TransceiverReader reader = new TransceiverReader(new DummyTransReceiver(baudRate), config, new Consumer<Integer>() {
+        TransceiverReader reader = new TransceiverReader(new DummyTransReceiver(baudRate), config, new Consumer<Byte>() {
             private boolean firstResult = true;
-            private int[] results = new int[]{1, 15, 47, 51, 255};
+            private int[] results = new int[]{-1, 1, 15, 47, 51};
 
             @Override
-            public void accept(Integer data) {
+            public void accept(Byte data) {
                 //show data for debugging
                 if (baudRate < 256) {
                     System.out.println(data);

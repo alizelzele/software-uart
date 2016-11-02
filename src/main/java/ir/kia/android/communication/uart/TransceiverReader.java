@@ -11,9 +11,9 @@ import java.util.function.Consumer;
  */
 class TransceiverReader extends TransceiverCommon {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final Consumer<Integer> dataConsumer;
+    private final Consumer<Byte> dataConsumer;
 
-    TransceiverReader(Transceiver transceiver, SerialConfig serialConfig, Consumer<Integer> dataConsumer) {
+    TransceiverReader(Transceiver transceiver, SerialConfig serialConfig, Consumer<Byte> dataConsumer) {
         super(transceiver, serialConfig);
         this.dataConsumer = dataConsumer;
     }
@@ -42,7 +42,7 @@ class TransceiverReader extends TransceiverCommon {
         }
     }
 
-    private void parseAndSendResult(int finalResult) {
+    private synchronized void parseAndSendResult(int finalResult) {
         if (serialConfig.isInverted()) {
             finalResult = ~finalResult;
         }
@@ -68,6 +68,6 @@ class TransceiverReader extends TransceiverCommon {
             finalResult = finalResult >> 1;
         }
         finalResult = finalResult & (~(~0 << serialConfig.getBits()));
-        dataConsumer.accept(finalResult);
+        dataConsumer.accept((byte)finalResult);
     }
 }
