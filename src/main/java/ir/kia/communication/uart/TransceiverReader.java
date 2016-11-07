@@ -1,4 +1,4 @@
-package ir.kia.android.communication.uart;
+package ir.kia.communication.uart;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,4 +1,4 @@
-package ir.kia.android.communication.uart;
+package ir.kia.communication.uart;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -57,5 +57,14 @@ public class UART {
 
     public void write(byte b) {
         writer.write(b);
+    }
+
+    public void write(byte[] bytes) {
+        writer.write(bytes);
+    }
+
+    public void stop() {
+        reader.stop();
+        writer.stop();
     }
 }

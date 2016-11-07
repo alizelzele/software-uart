@@ -1,6 +1,8 @@
-package ir.kia.android.communication.uart;
+package ir.kia.communication.uart;
 
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.function.Consumer;
 
@@ -11,6 +13,7 @@ import static org.junit.Assert.assertEquals;
  * @since 2016-10
  */
 public class TransceiverWriterTest {
+    private final Logger logger = LoggerFactory.getLogger(getClass());
     int baudRate = 64;
     SerialConfig config = new SerialConfig(baudRate, "8N1", false);
 
@@ -30,16 +33,16 @@ public class TransceiverWriterTest {
         }), config);
         new Thread(writer).start();
         Thread.sleep(500);
-        System.out.println("writing 1");
+        logger.info("writing 1");
         writer.write((byte) 1);
         Thread.sleep(1500);
-        System.out.println("writing 2 , 4");
+        logger.info("writing 2 , 4");
         writer.write(new byte[]{(byte) 2, (byte) 4});
         Thread.sleep(3000);
-        System.out.println("writing 7,8 and cutting in the middle");
+        logger.info("writing 7,8 and cutting in the middle");
         writer.write(new byte[]{(byte) 7, (byte) 8});
         Thread.sleep(500);
-        System.out.println("stopping");
+        logger.info("stopping");
         writer.stop();
         Thread.sleep(3000);
     }

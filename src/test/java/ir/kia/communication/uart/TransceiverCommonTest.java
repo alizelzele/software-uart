@@ -1,6 +1,8 @@
-package ir.kia.android.communication.uart;
+package ir.kia.communication.uart;
 
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Random;
 
@@ -11,6 +13,8 @@ import static org.junit.Assert.*;
  * @since 2016-10
  */
 public class TransceiverCommonTest {
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+
     @Test
     public void sleep() throws Exception {
         Random random = new Random();
@@ -31,7 +35,7 @@ public class TransceiverCommonTest {
 
         }
         long average = sum / 10;
-        System.out.println(average);
+        logger.info("" + average);
         assertTrue("sleeped less", average > 99800000);
         assertTrue("sleeped more", average < 100200000);
     }

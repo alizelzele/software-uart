@@ -1,4 +1,7 @@
-package ir.kia.android.communication.uart;
+package ir.kia.communication.uart;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.function.Consumer;
 
@@ -7,6 +10,7 @@ import java.util.function.Consumer;
  * @since 2016-10
  */
 class DummyTransReceiver implements Transceiver {
+    private final Logger logger = LoggerFactory.getLogger(getClass());
     private long startTransmit = System.nanoTime();
     private Long startReveice;
     private final static String TO_SENT = "111100000000111111100000111111111111110111111111011111111100010111110001100111111111111";
@@ -34,7 +38,7 @@ class DummyTransReceiver implements Transceiver {
         if (baudRate < 64) {
             int delay = (int) (System.nanoTime() - startTransmit);
             startTransmit = System.nanoTime();
-            System.out.println("sending " + status + " at " + delay);
+            logger.info("sending " + status + " at " + delay);
         }
         transmitIssued.accept(status);
     }
@@ -49,7 +53,7 @@ class DummyTransReceiver implements Transceiver {
         index = index % TO_SENT.length();
         // show index on slow tests for debugging
         if (baudRate < 64) {
-            System.out.println("read index: " + index);
+            logger.info("read index: " + index);
         }
         return Character.getNumericValue(TO_SENT.charAt(index));
     }

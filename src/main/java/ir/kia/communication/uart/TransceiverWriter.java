@@ -1,4 +1,4 @@
-package ir.kia.android.communication.uart;
+package ir.kia.communication.uart;
 
 import java.io.IOException;
 import java.io.PipedInputStream;

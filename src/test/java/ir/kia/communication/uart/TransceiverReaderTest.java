@@ -1,6 +1,8 @@
-package ir.kia.android.communication.uart;
+package ir.kia.communication.uart;
 
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.function.Consumer;
@@ -12,6 +14,7 @@ import static org.junit.Assert.fail;
  * @since 2016-10
  */
 public class TransceiverReaderTest {
+    private final Logger logger = LoggerFactory.getLogger(getClass());
     private int baudRate = 512;
 
     @Test
@@ -25,7 +28,7 @@ public class TransceiverReaderTest {
             public void accept(Byte data) {
                 //show data for debugging
                 if (baudRate < 256) {
-                    System.out.println(data);
+                    logger.info("" + data);
                 }
                 if (firstResult) {
                     //ignore first result since it might not be readed fully.
@@ -40,7 +43,7 @@ public class TransceiverReaderTest {
         new Thread(reader).start();
 
         Thread.sleep(10000);
-        System.out.println("stop readeing");
+        logger.info("stop readeing");
         reader.stop();
         Thread.sleep(1000);
     }
